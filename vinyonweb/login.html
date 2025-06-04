@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - VinYon</title>
+  <style>
+    /* Your existing styles here */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .form-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+    .password-container {
+      position: relative;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #007BFF;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0;
+      font-size: 14px;
+    }
+    .toggle-password:focus {
+      outline: 2px solid #007BFF;
+      outline-offset: 2px;
+    }
+    .buttons-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    button {
+      flex: 1;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .login-btn {
+      background-color: #4CAF50;
+    }
+    .login-btn:hover {
+      background-color: #45a049;
+    }
+    .clear-btn {
+      background-color: #f0ad4e;
+    }
+    .clear-btn:hover {
+      background-color: #ec971f;
+    }
+    .create-account-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .create-account-btn {
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+      transition: background-color 0.3s;
+    }
+    .create-account-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-box">
+    <h2>Login VinYon</h2>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required aria-required="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <div class="password-container">
+          <input type="password" id="password" name="password" required aria-required="true" />
+          <button type="button" class="toggle-password" aria-label="Show password" onclick="togglePassword('password', this)">Show</button>
+        </div>
+      </div>
+
+      <div class="buttons-row">
+        <button type="submit" class="login-btn">Login</button>
+        <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+      </div>
+    </form>
+
+    <div class="create-account-container">
+      <button class="create-account-btn" onclick="window.location.href='register.html'">Create Your Account</button>
+      <p style="margin-top: 10px;">
+        <a href="forgetpassword.html" onclick="forgotPassword()" style="color: #007BFF; text-decoration: none;">Forgot Password?</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+
+    function getAccounts() {
+      const accounts = localStorage.getItem('accounts');
+      return accounts ? JSON.parse(accounts) : [];
+    }
+
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value;
+
+      if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+      }
+
+      let accounts = getAccounts();
+
+      if (accounts.length === 0) {
+        alert('No accounts found. Please create an account first.');
+        return;
+      }
+
+      // Check if account exists with matching username & password
+      const account = accounts.find(acc => acc.username.toLowerCase() === username.toLowerCase() && acc.password === password);
+
+      if (!account) {
+        alert('Invalid username or password.');
+        return;
+      }
+
+      // Save logged in user to localStorage
+      localStorage.setItem('loggedInUser', JSON.stringify(account));
+
+      alert('Login successful!');
+      window.location.href = 'home.html';
+    });
+
+    function clearForm() {
+      loginForm.username.value = '';
+      loginForm.password.value = '';
+    }
+
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.textContent = 'Hide';
+        button.setAttribute('aria-label', 'Hide password');
+      } else {
+        input.type = 'password';
+        button.textContent = 'Show';
+        button.setAttribute('aria-label', 'Show password');
+      }
+    }
+  </script>
+
+</body>
+</html>

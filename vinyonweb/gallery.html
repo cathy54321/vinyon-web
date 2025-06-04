@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>gallery.html</title>
+<style>
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #000;
+    color: #ccc;
+    padding: 20px;
+  }
+  header {
+    color: #00bcd4;
+    margin-bottom: 20px;
+  }
+  label.upload-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 15px 20px 0;
+    background-color: #00bcd4;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  input[type="file"] {
+    display: none;
+  }
+  #gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  #gallery video, #gallery img {
+    max-width: 200px;
+    max-height: 140px;
+    border-radius: 8px;
+    background: black;
+    object-fit: cover;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>VinYon Garage Gallery Upload</h1>
+</header>
+
+<div>
+  <label class="upload-btn" for="uploadVideo">📤 Upload Video</label>
+  <input type="file" id="uploadVideo" accept="video/*" multiple />
+  
+  <label class="upload-btn" for="uploadImage">📤 Upload Image</label>
+  <input type="file" id="uploadImage" accept="image/*" multiple />
+</div>
+
+<div id="gallery"></div>
+
+<script>
+  const uploadVideo = document.getElementById('uploadVideo');
+  const uploadImage = document.getElementById('uploadImage');
+  const gallery = document.getElementById('gallery');
+
+  // Store all uploaded files URLs here for session display only
+  const uploadedFiles = [];
+
+  function addFileToGallery(file, type) {
+    const url = URL.createObjectURL(file);
+    uploadedFiles.push({url, type});
+
+    let element;
+    if(type === 'video') {
+      element = document.createElement('video');
+      element.src = url;
+      element.controls = true;
+      element.muted = true;
+      element.playsInline = true;
+    } else if(type === 'image') {
+      element = document.createElement('img');
+      element.src = url;
+      element.alt = file.name;
+    }
+
+    gallery.appendChild(element);
+  }
+
+  uploadVideo.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      if(!file.type.startsWith('video/')) {
+        alert('Please upload only video files for video upload.');
+        return;
+      }
+      addFileToGallery(file, 'video');
+    });
+  });
+
+  uploadImage.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      if(!file.type.startsWith('image/')) {
+        alert('Please upload only image files for image upload.');
+        return;
+      }
+      addFileToGallery(file, 'image');
+    });
+  });
+</script>
+
+</body>
+</html>

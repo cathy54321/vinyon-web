@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Account - VinYon</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .form-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+    .buttons-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    button {
+      flex: 1;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .register-btn {
+      background-color: #007BFF;
+    }
+    .register-btn:hover {
+      background-color: #0056b3;
+    }
+    .clear-btn {
+      background-color: #f0ad4e;
+    }
+    .clear-btn:hover {
+      background-color: #ec971f;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-box">
+    <h2>Create Your Account</h2>
+
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required aria-required="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Choose a username" required aria-required="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required aria-required="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required aria-required="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="password" id="confirm-password" name="confirm-password" required aria-required="true" />
+      </div>
+
+      <div class="buttons-row">
+        <button type="submit" class="register-btn">Create Account</button>
+        <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+      </div>
+
+      <div class="buttons-row">
+        <p style="margin-top: 10px;">
+            <a href="login.html" onclick="alreadyhaveaccount()" style="color: #007BFF; text-decoration: none;">DO YOU ALREADY HAVE ACCOUNT?</a>
+          </p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById('registerForm');
+
+    function getAccounts() {
+      const accounts = localStorage.getItem('accounts');
+      return accounts ? JSON.parse(accounts) : [];
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const name = registerForm.name.value.trim();
+      const username = registerForm.username.value.trim();
+      const email = registerForm.email.value.trim();
+      const password = registerForm.password.value;
+      const confirmPassword = registerForm['confirm-password'].value;
+
+      if (!name || !username || !email || !password || !confirmPassword) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      if (username.length < 3) {
+        alert('Username must be at least 3 characters long.');
+        return;
+      }
+
+      if (!email.includes('@') || !email.includes('.')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters long.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      let accounts = getAccounts();
+
+      // Check if username or email already exists
+      const usernameExists = accounts.some(acc => acc.username.toLowerCase() === username.toLowerCase());
+      if (usernameExists) {
+        alert('Username already exists. Please choose another one.');
+        return;
+      }
+      const emailExists = accounts.some(acc => acc.email.toLowerCase() === email.toLowerCase());
+      if (emailExists) {
+        alert('Email is already registered. Please use another one.');
+        return;
+      }
+
+      // Save new account with name
+      accounts.push({ name, username, email, password });
+      saveAccounts(accounts);
+
+      alert('Account created successfully!');
+      window.location.href = 'login.html';
+    });
+
+    function clearForm() {
+      registerForm.name.value = '';
+      registerForm.username.value = '';
+      registerForm.email.value = '';
+      registerForm.password.value = '';
+      registerForm['confirm-password'].value = '';
+    }
+  </script>
+
+</body>
+</html>
